@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-05-28T14:02:39.521Z</updated>
+  <updated>2018-05-28T14:41:58.460Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -17,16 +17,22 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>My New Post</title>
-    <link href="http://yoursite.com/2018/05/28/My-New-Post/"/>
-    <id>http://yoursite.com/2018/05/28/My-New-Post/</id>
+    <title>我的第一篇博客</title>
+    <link href="http://yoursite.com/2018/05/28/My-new-post/"/>
+    <id>http://yoursite.com/2018/05/28/My-new-post/</id>
     <published>2018-05-28T14:02:39.000Z</published>
-    <updated>2018-05-28T14:02:39.521Z</updated>
+    <updated>2018-05-28T14:41:58.460Z</updated>
+    
+    <content type="html"><![CDATA[<p><t>用来测试的标题</t></p><table><br><tr><br><td>第一格</td><br><td>第二格</td><br></tr><br></table>]]></content>
     
     <summary type="html">
     
+      用来做测试的描述内容，多写一些试试。
+    
     </summary>
     
+    
+      <category term="test" scheme="http://yoursite.com/tags/test/"/>
     
   </entry>
   
