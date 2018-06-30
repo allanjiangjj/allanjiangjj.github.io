@@ -190,7 +190,64 @@
 <p>​<strong>创建配置类</strong></p>
 <p>​配置类重要的是加入两个注解@Configuration和@EnableSwagger2。实际上这两个注解将包括该类在内的一系列bean注册到spring上下文中，通过这些bean的功能即启用了swagger。配置类中可以新建Docket，不建的话springfox会创建一个默认的docket，将所有读取到的接口归集到该默认docket下，docket的配置很简单，以建造者模式来构建，方法名也很容易读懂，完整的使用可以参考<a href="http://springfox.github.io/springfox/javadoc/current/" target="_blank" rel="noopener">这里</a>。</p>
 <p>​<strong>使用注解</strong></p>
-<p>​通过对Api添加注解，swagger能扫描到这些接口信息，并且生成文档。项目中最常用的注解有两个<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">​**Swagger-UI**</span><br><span class="line"></span><br><span class="line">​通过http://ip:port/your-app-root/swagger-ui.html访问到Springfox生成的Swagger-UI页面，这是最直接的使用。实际上，Springfox生成的Api文档在http://ip:port/your-app-root/v2/api-docs。在springfox-swagger2包下的Swagger2Controller类下可以找到这个默认URL，而且这个类添加了```@ApiIgnore```注解忽略了这些接口，不影响业务接口。说是默认，也就是说这个路径是可以配置的，扒了官方文档[^2]，找到这里：</span><br><span class="line"></span><br><span class="line">&gt;### 6.2. Customizing the swagger endpoints.</span><br><span class="line">&gt;</span><br><span class="line">&gt;By default the swagger service descriptions are generated at the following urls</span><br><span class="line">&gt;</span><br><span class="line">&gt;| Swagger version | Documentation Url           | Group                                     |</span><br><span class="line">&gt;| --------------- | --------------------------- | ----------------------------------------- |</span><br><span class="line">&gt;| 2.0             | /v2/api-docs?group=external | **external** group via docket.groupName() |</span><br><span class="line">&gt;| 1.2             | /api-docs                   | implicit **default** group                |</span><br><span class="line">&gt;| 1.2             | /api-docs?group=external    | **external** group via docket.groupName() |</span><br><span class="line">&gt;| 2.0             | /v2/api-docs                | implicit **default** group                |</span><br><span class="line">&gt;</span><br><span class="line">&gt;To customize these endpoints, loading a [property source](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/PropertySource.html) with the following properties allows the properties to be overridden</span><br><span class="line">&gt;</span><br><span class="line">&gt;| Swagger version | Override property                       |</span><br><span class="line">&gt;| --------------- | --------------------------------------- |</span><br><span class="line">&gt;| 2.0             | springfox.documentation.swagger.v2.path |</span><br><span class="line">&gt;| 1.2             | springfox.documentation.swagger.v1.path |</span><br><span class="line"></span><br><span class="line">所以，只要加载一个properties文件，里面写上（版本2.0）：</span><br><span class="line"></span><br><span class="line">```properties</span><br><span class="line">springfox.documentation.swagger.v2.path=/my/docs</span><br></pre></td></tr></table></figure></p>
+<p>​通过对Api添加注解，swagger能扫描到这些接口信息，并且生成文档。项目中最常用的注解有两个 <code>@ApiOperation</code> 和 <code>@ApiParam</code><br>前者是用于描述Api的名称及作用，后者直接用于描述具体的参数。其实对于一个接口来说，有接口名、请求参数再加上返回结果的描述就已经很完整了，由于项目的接口返回是统一的格式，也就没有在swagger中再添加描述，于是，上面两个注解就满足了项目需求。当然，这只是Springfox注解的冰山一角，可以看SwaggerAnnotation<a href="http://docs.swagger.io/swagger-core/v1.5.0/apidocs/io/swagger/annotations/package-summary.html" target="_blank" rel="noopener">^3</a>文档的完整描述。</p>
+<p>​<strong>Swagger-UI</strong></p>
+<p>​通过<a href="http://ip:port/your-app-root/swagger-ui.html" target="_blank" rel="noopener">http://ip:port/your-app-root/swagger-ui.html</a> 访问到Springfox生成的Swagger-UI页面，这是最直接的使用。实际上，Springfox生成的Api文档在<a href="http://ip:port/your-app-root/v2/api-docs" target="_blank" rel="noopener">http://ip:port/your-app-root/v2/api-docs</a> 。在springfox-swagger2包下的Swagger2Controller类下可以找到这个默认URL，而且这个类添加了<code>@ApiIgnore</code>注解忽略了这些接口，不影响业务接口。说是默认，也就是说这个路径是可以配置的，扒了官方文档<a href="http://springfox.github.io/springfox/docs/current/#introduction" target="_blank" rel="noopener">^2</a>，找到这里：</p>
+<blockquote>
+<h3 id="6-2-Customizing-the-swagger-endpoints"><a href="#6-2-Customizing-the-swagger-endpoints" class="headerlink" title="6.2. Customizing the swagger endpoints."></a>6.2. Customizing the swagger endpoints.</h3><p>By default the swagger service descriptions are generated at the following urls</p>
+<table>
+<thead>
+<tr>
+<th>Swagger version</th>
+<th>Documentation Url</th>
+<th>Group</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.0</td>
+<td>/v2/api-docs?group=external</td>
+<td><strong>external</strong> group via docket.groupName()</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>/api-docs</td>
+<td>implicit <strong>default</strong> group</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>/api-docs?group=external</td>
+<td><strong>external</strong> group via docket.groupName()</td>
+</tr>
+<tr>
+<td>2.0</td>
+<td>/v2/api-docs</td>
+<td>implicit <strong>default</strong> group</td>
+</tr>
+</tbody>
+</table>
+<p>To customize these endpoints, loading a <a href="http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/PropertySource.html" target="_blank" rel="noopener">property source</a> with the following properties allows the properties to be overridden</p>
+<table>
+<thead>
+<tr>
+<th>Swagger version</th>
+<th>Override property</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.0</td>
+<td>springfox.documentation.swagger.v2.path</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>springfox.documentation.swagger.v1.path</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>所以，只要加载一个properties文件，里面写上（版本2.0）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">springfox.documentation.swagger.v2.path=/my/docs</span><br></pre></td></tr></table></figure>
 <p>就可以自定义路径了。</p>
 <p>​得到的这个Api文档，就是Swagger官方定义的Api文档格式，你甚至可以直接把它复制出来放到Swagger的线上Swagger-Editor中去，渲染的页面和本地访问到的是一样的。<br>​实际上，这个页面有很多大神是不满意的，不够漂亮，阅读也不够方便，特别是接口数量比较多的情况下。既然拿到了页面渲染的源文件，即这个Api文档(这个文档后面还会提到)，自然可以自己进行解析渲染出想要的页面来。在这里推荐两个最有名的优秀开源项目<a href="https://github.com/xiaoymin/Swagger-Bootstrap-UI" target="_blank" rel="noopener"><strong>Swagger-bootstrap-ui</strong></a>和<a href="https://github.com/caspar-chen/swagger-ui-layer" target="_blank" rel="noopener"><strong>Swagger-UI-layer</strong></a>。比原生界面优美也更容易查阅。使用也很简单，在maven中引入，替换swagger-ui就行。<br>​    </p>
 <h2 id="扩展内容"><a href="#扩展内容" class="headerlink" title="扩展内容"></a>扩展内容</h2><p>以上内容基本上是项目开发过程中所用到的全部相关了，接下来的一些是查阅资料过程发现的更多值得学习的东西，先做记录，有机会会将这些内容进行实践。</p>
@@ -214,7 +271,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">-programming -tools</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">programming</a>
         		</li>
       		
 		</ul>
@@ -461,11 +522,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">programing</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">tools</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">programming</a>
         		</li>
       		
 		</ul>
@@ -611,6 +672,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">-essay</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">programming</a>
               </li>
             
             <div class="clearfix"></div>
